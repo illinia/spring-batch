@@ -4,14 +4,32 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @Getter
 @Setter
+@ToString
+@Entity
+@Table(name = "customer")
+//@XmlRootElement
 public class Customer {
+    @Id
+    private Long id;
 
+    @Column(name = "firstname")
     private String firstName;
+
+    @Column(name = "middleInitial")
     private String middleInitial;
+
+    @Column(name = "lastName")
     private String lastName;
 //    private String addressNumber;
 //    private String street;
@@ -20,25 +38,12 @@ public class Customer {
     private String state;
     private String zipCode;
 
-    private List<Transaction> transactions;
+//    private List<Transaction> transactions;
 
-    @Override
-    public String toString() {
-        StringBuilder output = new StringBuilder();
+//    @XmlElementWrapper(name = "transactions")
+//    @XmlElement(name = "transaction")
+//    public void setTransactions(List<Transaction> transactions) {
+//        this.transactions = transactions;
+//    }
 
-        output.append(firstName);
-        output.append(" ");
-        output.append(middleInitial);
-        output.append(". ");
-        output.append(lastName);
-
-        if (transactions != null && transactions.size() > 0) {
-            output.append(" has ");
-            output.append(transactions.size());
-            output.append(" transactions.");
-        } else {
-            output.append(" has no transactions.");
-        }
-        return output.toString();
-    }
 }
