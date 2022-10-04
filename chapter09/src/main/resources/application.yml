@@ -1,0 +1,16 @@
+spring:
+  batch:
+    initialize-schema: always
+  jms:
+    template:
+      default-destination: customers
+      receive-timeout: 5000
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/spring-batch;MODE=MYSQL
+    username: 'sa'
+    password:
+    initialization-mode: always
+  jpa:
+    properties:
+      hibernate:
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
