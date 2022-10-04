@@ -1,7 +1,7 @@
 package io.spring.batch.helloworld;
 
+import io.spring.batch.helloworld.batch.EvenFilteringItemProcessor;
 import io.spring.batch.helloworld.domain.Customer;
-import io.spring.batch.helloworld.domain.UniqueLastNameValidator;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -12,8 +12,6 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
-import org.springframework.batch.item.support.ScriptItemProcessor;
-import org.springframework.batch.item.validator.ValidatingItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -22,19 +20,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 
 @EnableBatchProcessing
-//@SpringBootApplication
-public class ScriptItemProcessorJob {
+@SpringBootApplication
+public class CustomItemProcessorJob {
 
     @Bean
-    @StepScope
-    public ScriptItemProcessor<Customer, Customer> itemProcessor(
-            @Value("#{jobParameters['script']}") Resource script
-            ) {
-        ScriptItemProcessor<Customer, Customer> itemProcessor = new ScriptItemProcessor<>();
-
-        itemProcessor.setScript(script);
-
-        return itemProcessor;
+    public EvenFilteringItemProcessor itemProcessor() {
+        return new EvenFilteringItemProcessor();
     }
 
     @Autowired
@@ -75,7 +66,7 @@ public class ScriptItemProcessorJob {
         return this.stepBuilderFactory.get("copyFileStep")
                 .<Customer, Customer>chunk(5)
                 .reader(customerItemReader(null))
-                .processor(itemProcessor(null))
+                .processor(itemProcessor())
                 .writer(itemWriter())
                 .build();
     }
@@ -89,6 +80,6 @@ public class ScriptItemProcessorJob {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(ScriptItemProcessorJob.class, "customerFile=file:///Users/taemin/spring-batch/chapter08/src/main/resources/input/customer.csv", "script=file:///Users/taemin/spring-batch/chapter08/src/main/resources/upperCase.js");
+        SpringApplication.run(CustomItemProcessorJob.class, "customerFile=file:///Users/taemin/spring-batch/chapter08/src/main/resources/input/customer.csv", "script=file:///Users/taemin/spring-batch/chapter08/src/main/resources/lowerCase.js");
     }
 }
